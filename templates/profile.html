@@ -1,0 +1,46 @@
+{% extends 'home.html' %}
+
+{% block content %}
+<div class="auth-page">
+    <section class="auth-card profile-card">
+        <p class="auth-kicker">System33 account</p>
+        <div class="profile-avatar">
+            {% if user_profile.avatar %}
+                <img src="{{ user_profile.avatar.url }}" alt="Avatar of {{ profile_user.username }}">
+            {% else %}
+                {{ profile_user.username|first|upper }}
+            {% endif %}
+        </div>
+        <h2 class="auth-title">{{ profile_user.username }}</h2>
+        <p class="auth-description">Your System33 profile</p>
+
+        <form method="post" enctype="multipart/form-data" class="avatar-form">
+            {% csrf_token %}
+            <label for="id_avatar" class="avatar-label">Profile picture</label>
+            <p class="avatar-hint">JPG, PNG, or GIF</p>
+            {{ profile_form.avatar }}
+            {% if profile_form.avatar.errors %}
+                <div class="auth-error">{{ profile_form.avatar.errors }}</div>
+            {% endif %}
+            <button type="submit" class="profile-action-button">Change avatar</button>
+        </form>
+
+        <dl class="profile-details">
+            <div>
+                <dt>Username</dt>
+                <dd>{{ profile_user.username }}</dd>
+            </div>
+            <div>
+                <dt>Email</dt>
+                <dd>{{ profile_user.email|default:'Email not provided' }}</dd>
+            </div>
+            <div>
+                <dt>Joined</dt>
+                <dd>{{ profile_user.date_joined|date:'d.m.Y' }}</dd>
+            </div>
+        </dl>
+
+        <a class="profile-home-link" href="{% url 'home' %}">Back to home</a>
+    </section>
+</div>
+{% endblock %}

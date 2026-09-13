@@ -1,0 +1,199 @@
+{% extends "home.html" %}
+
+{% block content %}
+<section>
+        <h2>Featured mods</h2>
+        <ul class="content-grid">
+            {% for mod in mods %}
+                <a href="/mods/{{ mod.slug }}/" class="content-card">
+                    <div class="content-icon">
+                        {% if mod.image %}
+                            <img src="{{ mod.image.url }}" alt="{{ mod.title }}">
+                        {% else %}
+                            📦
+                        {% endif %}
+                    </div>
+                    <div class="content-body">
+                        <div class="content-header">
+                            <h3 class="content-title">{{ mod.title }}</h3>
+                            {% if mod.summary %}
+                                <p class="content-desc">{{ mod.summary }}</p>
+                            {% endif %}
+                        </div>
+                        <div class="content-meta">
+                            {% if mod.author %}
+                                <span class="meta-author">by {{ mod.author.name }}</span>
+                            {% endif %}
+                            {% if mod.game_version %}
+                                <span class="meta-tag">{{ mod.game_version }}</span>
+                            {% endif %}
+                            {% if mod.downloads %}
+                                <span class="meta-stat">⬇️ {{ mod.downloads }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </a>
+            {% empty %}
+                <li>No mods yet.</li>
+            {% endfor %}
+        </ul>
+        <p><a href="/mods/">View all mods</a></p>
+    </section>
+
+    <section>
+        <h2>Texture Packs</h2>
+        <ul class="content-grid">
+            {% for texture_pack in texture_packs %}
+                <a href="/texture-packs/{{ texture_pack.slug }}/" class="content-card">
+                    <div class="content-icon">
+                        {% if texture_pack.image %}
+                            <img src="{{ texture_pack.image.url }}" alt="{{ texture_pack.title }}">
+                        {% else %}
+                            🎨
+                        {% endif %}
+                    </div>
+                    <div class="content-body">
+                        <div class="content-header">
+                            <h3 class="content-title">{{ texture_pack.title }}</h3>
+                            {% if texture_pack.summary %}
+                                <p class="content-desc">{{ texture_pack.summary }}</p>
+                            {% endif %}
+                        </div>
+                        <div class="content-meta">
+                            {% if texture_pack.author %}
+                                <span class="meta-author">by {{ texture_pack.author.name }}</span>
+                            {% endif %}
+                            {% if texture_pack.game_version %}
+                                <span class="meta-tag">{{ texture_pack.game_version }}</span>
+                            {% endif %}
+                            {% if texture_pack.downloads %}
+                                <span class="meta-stat">⬇️ {{ texture_pack.downloads }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </a>
+            {% empty %}
+                <li>No texture packs yet.</li>
+            {% endfor %}
+        </ul>
+        <p><a href="/texture-packs/">View all texture packs</a></p>
+    </section>
+
+    <section>
+        <h2>Modpacks</h2>
+        <ul class="content-grid">
+            {% for modpack in modpacks %}
+                <a href="/modpacks/{{ modpack.slug }}/" class="content-card">
+                    <div class="content-icon">
+                        {% if modpack.image %}
+                            <img src="{{ modpack.image.url }}" alt="{{ modpack.title }}">
+                        {% else %}
+                            📦
+                        {% endif %}
+                    </div>
+                    <div class="content-body">
+                        <div class="content-header">
+                            <h3 class="content-title">{{ modpack.title }}</h3>
+                            {% if modpack.summary %}
+                                <p class="content-desc">{{ modpack.summary }}</p>
+                            {% endif %}
+                        </div>
+                        <div class="content-meta">
+                            {% if modpack.author %}
+                                <span class="meta-author">by {{ modpack.author.name }}</span>
+                            {% endif %}
+                            {% if modpack.game_version %}
+                                <span class="meta-tag">{{ modpack.game_version }}</span>
+                            {% endif %}
+                            {% if modpack.downloads %}
+                                <span class="meta-stat">⬇️ {{ modpack.downloads }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </a>
+            {% empty %}
+                <li>No modpacks yet.</li>
+            {% endfor %}
+        </ul>
+        <p><a href="/modpacks/">View all modpacks</a></p>
+    </section>
+
+    <section>
+        <h2>Worlds</h2>
+        <ul class="content-grid">
+            {% for world in worlds %}
+                <a href="/worlds/{{ world.slug }}/" class="content-card">
+                    <div class="content-icon">
+                        {% if world.image %}
+                            <img src="{{ world.image.url }}" alt="{{ world.title }}">
+                        {% else %}
+                            🌍
+                        {% endif %}
+                    </div>
+                    <div class="content-body">
+                        <div class="content-header">
+                            <h3 class="content-title">{{ world.title }}</h3>
+                            {% if world.summary %}
+                                <p class="content-desc">{{ world.summary }}</p>
+                            {% endif %}
+                        </div>
+                        <div class="content-meta">
+                            {% if world.author %}
+                                <span class="meta-author">by {{ world.author.name }}</span>
+                            {% endif %}
+                            {% if world.game_version %}
+                                <span class="meta-tag">{{ world.game_version }}</span>
+                            {% endif %}
+                            {% if world.downloads %}
+                                <span class="meta-stat">⬇️ {{ world.downloads }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </a>
+            {% empty %}
+                <li>No worlds yet.</li>
+            {% endfor %}
+        </ul>
+        <p><a href="/worlds/">View all worlds</a></p>
+    </section>
+
+    <section>
+        <h2>Shaders</h2>
+        <ul class="content-grid">
+            {% for shader in shaders %}
+                <a href="/shaders/{{ shader.slug }}/" class="content-card">
+                    <div class="content-icon">
+                        {% if shader.image %}
+                            <img src="{{ shader.image.url }}" alt="{{ shader.title }}">
+                        {% else %}
+                            ✨
+                        {% endif %}
+                    </div>
+                    <div class="content-body">
+                        <div class="content-header">
+                            <h3 class="content-title">{{ shader.title }}</h3>
+                            {% if shader.summary %}
+                                <p class="content-desc">{{ shader.summary }}</p>
+                            {% endif %}
+                        </div>
+                        <div class="content-meta">
+                            {% if shader.author %}
+                                <span class="meta-author">by {{ shader.author.name }}</span>
+                            {% endif %}
+                            {% if shader.game_version %}
+                                <span class="meta-tag">{{ shader.game_version }}</span>
+                            {% endif %}
+                            {% if shader.downloads %}
+                                <span class="meta-stat">⬇️ {{ shader.downloads }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </a>
+            {% empty %}
+                <li>No shaders yet.</li>
+            {% endfor %}
+        </ul>
+        <p><a href="/shaders/">View all shaders</a></p>
+    </section>
+</body>
+{% endblock %}

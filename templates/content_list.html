@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+    <style>
+        :root {
+            color-scheme: dark;
+            background-color: #190602;
+            color: #ffe9b4;
+            --surface: #340f0b;
+            --surface-strong: #5a140f;
+            --border: #b23019;
+            --text-muted: #ffe3a3;
+            --accent: #ffcd3f;
+            --accent-strong: #ff3300;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Inter, Arial, sans-serif;
+            background: radial-gradient(circle at top left, rgba(255, 181, 39, 0.18), transparent 20%),
+                        linear-gradient(180deg, #230803 0%, #0b0201 100%);
+            color: #f8e1a6;
+            line-height: 1.6;
+        }
+
+        .page {
+            max-width: 1080px;
+            margin: 0 auto;
+            padding: 24px 24px 40px;
+        }
+
+        header {
+            margin: 0 auto 24px;
+            padding: 24px 24px 20px;
+            background: linear-gradient(135deg, rgba(255, 207, 94, 0.18), rgba(58, 16, 7, 0.96));
+            border: 1px solid rgba(255, 181, 39, 0.45);
+            border-radius: 22px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            box-shadow: 0 20px 50px rgba(255, 106, 0, 0.12);
+        }
+
+        h1 {
+            margin: 0;
+            font-size: clamp(2rem, 2.5vw, 3rem);
+            color: #ffffff;
+        }
+
+        p {
+            margin: 0;
+            color: var(--text-muted);
+        }
+
+        a {
+            color: #58a6ff;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .content-layout {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 20px;
+            align-items: start;
+        }
+
+        .sidebar {
+            display: grid;
+            gap: 18px;
+            padding: 20px;
+            background: linear-gradient(180deg, rgba(35,10,8,0.95), rgba(18,6,5,0.96));
+            border: 1px solid rgba(255, 115, 40, 0.08);
+            border-radius: 18px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255, 181, 39, 0.03);
+        }
+
+        .sidebar h2 {
+            margin: 0 0 6px 0;
+            font-size: 1.05rem;
+            color: #f8e1a6;
+            font-weight: 700;
+            text-shadow: 0 2px 6px rgba(0,0,0,0.6);
+        }
+
+        .sidebar label,
+        .sidebar p {
+            color: var(--accent);
+            margin: 0;
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+
+        .sidebar input,
+        .sidebar select {
+            width: 100%;
+            padding: 12px 14px;
+            border-radius: 14px;
+            border: 1px solid rgba(255, 181, 39, 0.22);
+            background: linear-gradient(180deg, rgba(28,10,9,0.9), rgba(20,6,5,0.95));
+            color: #fff4d2;
+            font-size: 1rem;
+            outline: none;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.02);
+        }
+
+        .sidebar input::placeholder {
+            color: rgba(255, 225, 160, 0.35);
+        }
+
+        .version-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 260px;
+            overflow-y: auto;
+        }
+
+        .version-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 14px;
+            border-radius: 14px;
+            border: 1px solid rgba(255, 181, 39, 0.16);
+            background: rgba(43, 11, 5, 0.88);
+            color: #fff4d2;
+            cursor: pointer;
+        }
+
+        .version-option input {
+            accent-color: #58a6ff;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            margin-right: 8px;
+            accent-color: var(--accent-strong);
+        }
+
+        .loader-group {
+            margin-top: 12px;
+        }
+
+        .version-description {
+            margin-top: 10px;
+            padding: 10px 12px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 181, 39, 0.06);
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* Version dropdown panel */
+        .version-dropdown .dropdown {
+            position: relative;
+        }
+
+        .version-dropdown input[name="version"] {
+            width: 100%;
+            padding: 12px 14px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,181,39,0.12);
+            background: rgba(20,8,7,0.95);
+            color: #fff4d2;
+            cursor: pointer;
+        }
+
+        .dropdown-panel {
+            position: static;
+            background: linear-gradient(180deg, rgba(22,8,7,0.98), rgba(12,5,4,0.98));
+            border: 1px solid rgba(255,181,39,0.06);
+            border-radius: 12px;
+            padding: 10px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+            max-height: 240px;
+            overflow: hidden;
+            display: none;
+        }
+
+        .dropdown-panel.open { display: block; }
+
+        .version-search {
+            width: 100%;
+            padding: 8px 10px;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.04);
+            background: rgba(255,255,255,0.02);
+            color: #fff4d2;
+            margin-bottom: 8px;
+            outline: none;
+        }
+
+        .version-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            max-height: 160px;
+            overflow-y: auto;
+        }
+
+        .version-option {
+            padding: 8px 10px;
+            border-radius: 8px;
+            color: #fff4d2;
+            cursor: pointer;
+        }
+
+        .version-option:hover { background: rgba(255,255,255,0.02); }
+        .version-option.selected { background: rgba(40,90,40,0.12); border-left: 3px solid var(--accent); }
+
+        .panel-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 8px;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            padding: 6px 2px;
+        }
+
+        .panel-header.small h2 { font-size: 1rem; }
+
+        .panel-header h2 { margin: 0; color: #fff; font-size: 1.05rem; }
+
+        .chevron { color: var(--text-muted); transition: transform 0.18s ease; }
+        .chevron.rotated { transform: rotate(-180deg); }
+
+        .loader-panel { margin-top: 8px; }
+
+        .loader-list { list-style: none; padding: 0; margin: 6px 0; }
+
+        .loader-item { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 8px; color: #ffd; cursor: pointer; }
+        .loader-item:hover { background: rgba(255,255,255,0.02); }
+        .loader-item.selected { background: rgba(255,140,40,0.08); border-left: 3px solid var(--accent); }
+
+        .loader-icon { width: 20px; display:inline-block; text-align:center; }
+
+        .hidden { display: none !important; }
+
+        .show-more { background: transparent; border: none; color: var(--accent); padding: 8px 0; cursor: pointer; font-weight: 600; }
+
+        section {
+            padding: 24px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        li {
+            margin: 10px 0;
+            padding: 14px 16px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 12px;
+        }
+
+        .back-link {
+            font-size: 0.98rem;
+            color: var(--text-muted);
+        }
+
+        .filter-bar {
+            display: none;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            min-width: 200px;
+        }
+
+        .checkbox-group {
+            flex-direction: row;
+            align-items: center;
+            gap: 10px;
+            min-width: auto;
+        }
+
+        .filter-bar label {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .filter-bar select,
+        .filter-bar input {
+            padding: 10px 14px;
+            border-radius: 14px;
+            border: 1px solid rgba(88, 166, 255, 0.35);
+            background: rgba(18, 24, 36, 0.96);
+            color: #e6f2ff;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        .filter-button {
+            padding: 10px 18px;
+            border-radius: 14px;
+            border: 1px solid rgba(255, 140, 50, 0.22);
+            background: linear-gradient(180deg, rgba(255,140,40,0.15), rgba(70,18,10,0.9));
+            color: #fff4d2;
+            cursor: pointer;
+            font-size: 0.98rem;
+            transition: transform 0.12s ease, box-shadow 0.12s ease;
+            box-shadow: 0 6px 18px rgba(255, 80, 0, 0.06);
+        }
+
+        .filter-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255, 90, 0, 0.12);
+        }
+
+        .empty {
+            color: var(--text-muted);
+        }
+
+        .pagination {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            margin-top: 24px;
+        }
+
+        .pagination a,
+        .pagination-current {
+            padding: 8px 14px;
+            border: 1px solid rgba(255, 181, 39, 0.45);
+            border-radius: 9px;
+            background: rgba(255, 181, 39, 0.1);
+            color: #ffcd3f;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .pagination a:hover {
+            background: rgba(255, 181, 39, 0.22);
+        }
+
+        .pagination-current {
+            border-color: rgba(255, 181, 39, 0.18);
+            background: transparent;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <header>
+            <div>
+                <h1>{{ title }}</h1>
+                <p>List of all available {{ title|lower }}.</p>
+            </div>
+            <a class="back-link" href="/">Back to home</a>
+        </header>
+
+        <div class="content-layout">
+            <aside class="sidebar">
+                <div class="panel-header" role="button" tabindex="0" aria-expanded="true" onclick="togglePanel('versionPanelWrapper')">
+                    <h2>Game version</h2>
+                    <span class="chevron" id="chev-version">▾</span>
+                </div>
+                <form method="get" id="versionForm">
+                    <div id="versionPanelWrapper">
+                    <div class="filter-group version-dropdown">
+                        <label for="version">Select version</label>
+                        <div class="dropdown" id="versionDropdown">
+                            <input id="version" name="version_display" autocomplete="off" placeholder="Search versions..." value="{{ current_version }}" onfocus="openVersionDropdown();" readonly>
+                            {# hidden inputs for already-selected versions #}
+                            {% for v in current_versions %}
+                                <input type="hidden" name="version" value="{{ v }}">
+                            {% endfor %}
+                            <div class="dropdown-panel" id="versionPanel" aria-hidden="true">
+                                <input type="search" id="versionSearch" class="version-search" placeholder="Search..." oninput="filterVersions();">
+                                <ul id="versionOptions" class="version-list">
+                                    {% for version in versions %}
+                                        <li class="version-option {% if version in current_versions %}selected{% endif %}" data-value="{{ version }}" onclick="toggleVersion(this);">{{ version }}</li>
+                                    {% endfor %}
+                                </ul>
+                                <label class="panel-checkbox">
+                                    <input type="checkbox" name="show_all_versions" value="1" {% if show_all_versions %}checked{% endif %} onchange="document.getElementById('versionForm').submit();">
+                                    Show all versions
+                                </label>
+                            </div>
+                        </div>
+                        {% if current_version_description %}
+                            <div class="version-description">{{ current_version_description }}</div>
+                        {% endif %}
+                    </div>
+
+                    {# Sort removed per request; default newest-first ordering used #}
+
+                    </div>
+
+                    <div class="panel-header small" role="button" tabindex="0" aria-expanded="true" onclick="togglePanel('loaderPanelWrapper')">
+                        <h2>Loader</h2>
+                        <span class="chevron" id="chev-loader">▾</span>
+                    </div>
+                    <div id="loaderPanelWrapper" class="loader-panel">
+                        {# hidden inputs for selected loaders #}
+                        {% for l in current_loaders %}
+                            <input type="hidden" name="loader" value="{{ l }}">
+                        {% endfor %}
+                        <ul class="loader-list" id="loaderList">
+                            {% for loader in loaders %}
+                                <li class="loader-item {% if forloop.counter > 3 %}more-item hidden{% endif %} {% if loader in current_loaders %}selected{% endif %}" data-value="{{ loader }}" onclick="toggleLoader(this);">
+                                    <span class="loader-icon">🔸</span>
+                                    <span class="loader-name">{{ loader }}</span>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                        {% if loaders|length > 3 %}
+                            <button type="button" class="show-more" id="loaderShowMore" onclick="toggleMoreLoaders(this)">Show more</button>
+                        {% endif %}
+                    </div>
+                    <div class="panel-header small" role="button" tabindex="0" aria-expanded="true" onclick="togglePanel('categoryPanelWrapper')">
+                        <h2>Category</h2>
+                        <span class="chevron" id="chev-category">▾</span>
+                    </div>
+                    <div id="categoryPanelWrapper" class="loader-panel">
+                        {% if categories %}
+                            {% for c in current_categories %}
+                                <input type="hidden" name="category" value="{{ c }}">
+                            {% endfor %}
+                            <ul class="loader-list" id="categoryList">
+                                {% for cat in categories %}
+                                    <li class="loader-item {% if cat.slug in current_categories %}selected{% endif %}" data-value="{{ cat.slug }}" onclick="toggleCategory(this);">
+                                        <span class="loader-icon">{{ cat.icon }}</span>
+                                        <span class="loader-name">{{ cat.name }}</span>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                    </div>
+                    <div class="panel-header small" role="button" tabindex="0" aria-expanded="true" onclick="togglePanel('environmentPanelWrapper')">
+                        <h2>Environment</h2>
+                        <span class="chevron" id="chev-environment">▾</span>
+                    </div>
+                    <div id="environmentPanelWrapper" class="loader-panel">
+                        {% for e in current_environments %}
+                            <input type="hidden" name="environment" value="{{ e }}">
+                        {% endfor %}
+                        <ul class="loader-list" id="environmentList">
+                            {% for env in environment_values %}
+                                <li class="loader-item {% if env in current_environments %}selected{% endif %}" data-value="{{ env }}" onclick="toggleEnvironment(this);">
+                                    <span class="loader-icon">🌐</span>
+                                    <span class="loader-name">{{ env }}</span>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </form>
+            </aside>
+
+            <section>
+                <ul style="display: grid; gap: 16px; list-style: none; padding: 0; margin: 0;">
+                {% for item in items %}
+                    <a href="/{{ model_name }}/{{ item.slug }}/" style="display: flex; gap: 16px; padding: 16px; background: linear-gradient(135deg, rgba(52, 14, 6, 0.6), rgba(35, 10, 8, 0.6)); border: 1px solid rgba(255, 181, 39, 0.15); border-radius: 14px; transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s; text-decoration: none; color: inherit; cursor: pointer;" onmouseover="this.style.transform='translateY(-2px)'; this.style.borderColor='rgba(255, 181, 39, 0.35)'; this.style.boxShadow='0 8px 24px rgba(255, 111, 0, 0.15)';" onmouseout="this.style.transform='none'; this.style.borderColor='rgba(255, 181, 39, 0.15)'; this.style.boxShadow='none';">
+                        <div style="width: 64px; height: 64px; min-width: 64px; border-radius: 10px; background: linear-gradient(135deg, #ffdc5c, #ff9a1e); display: grid; place-items: center; color: #1a0400; font-weight: 800; font-size: 1.8rem; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.11); object-fit: cover;">
+                            {% if item.image %}
+                                <img src="{{ item.image.url }}" alt="{{ item.title }}" style="width: 100%; height: 100%; border-radius: 10px; object-fit: cover;">
+                            {% else %}
+                                📦
+                            {% endif %}
+                        </div>
+                        <div style="flex: 1; display: flex; flex-direction: column; justify-content: space-between;">
+                            <div>
+                                <h3 style="margin: 0; font-size: 1.05rem; font-weight: 600; color: #ffffff;">{{ item.title }}</h3>
+                                {% if item.summary %}
+                                    <p style="margin: 4px 0 0; font-size: 0.9rem; color: #ffe3a3; line-height: 1.4;">{{ item.summary }}</p>
+                                {% endif %}
+                            </div>
+                            <div style="display: flex; gap: 16px; align-items: center; flex-wrap: wrap; margin-top: 8px; font-size: 0.85rem;">
+                                {% if item.author %}
+                                    <span style="color: #ffe3a3;">by {{ item.author.name }}</span>
+                                {% endif %}
+                                {% if item.game_version %}
+                                    <span style="display: inline-flex; align-items: center; gap: 4px; padding: 4px 8px; background: rgba(255, 181, 39, 0.1); border: 1px solid rgba(255, 181, 39, 0.2); border-radius: 6px; color: #ffcd3f; font-weight: 500;">{{ item.game_version }}</span>
+                                {% endif %}
+                                {% if item.downloads %}
+                                    <span style="display: flex; align-items: center; gap: 4px; color: #ffe3a3;">⬇️ {{ item.downloads }}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </a>
+                {% empty %}
+                    <li class="empty">{{ empty_message }}</li>
+                {% endfor %}
+                </ul>
+                {% if page_obj.has_other_pages %}
+                    <nav class="pagination" aria-label="List pagination">
+                        {% if page_obj.has_previous %}
+                            <a href="?{% if pagination_query %}{{ pagination_query }}&{% endif %}page={{ page_obj.previous_page_number }}">← Previous</a>
+                        {% endif %}
+                        <span class="pagination-current">{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
+                        {% if page_obj.has_next %}
+                            <a href="?{% if pagination_query %}{{ pagination_query }}&{% endif %}page={{ page_obj.next_page_number }}">Next →</a>
+                        {% endif %}
+                    </nav>
+                {% endif %}
+            </section>
+    </div>
+</div>
+    <script>
+        (function(){
+            const dropdown = document.getElementById('versionDropdown');
+            const panel = document.getElementById('versionPanel');
+            const search = document.getElementById('versionSearch');
+            const input = document.getElementById('version');
+
+            window.openVersionDropdown = function(){
+                panel.classList.add('open');
+                panel.setAttribute('aria-hidden', 'false');
+                if(search) search.focus();
+            };
+
+            window.filterVersions = function(){
+                const q = (search.value || '').toLowerCase();
+                const items = document.querySelectorAll('#versionOptions .version-option');
+                items.forEach(li => {
+                    const txt = li.textContent.trim().toLowerCase();
+                    li.style.display = txt.indexOf(q) === -1 ? 'none' : '';
+                });
+            };
+
+            window.toggleVersion = function(el){
+                if(!el) return;
+                const v = el.getAttribute('data-value') || el.textContent.trim();
+                const form = document.getElementById('versionForm');
+                // toggle hidden input
+                const existing = Array.from(form.querySelectorAll('input[name="version"]')).find(i=>i.value===v);
+                if(existing){
+                    existing.remove();
+                    el.classList.remove('selected');
+                } else {
+                    const h = document.createElement('input'); h.type='hidden'; h.name='version'; h.value=v; form.appendChild(h);
+                    el.classList.add('selected');
+                }
+                // update display value
+                const selected = Array.from(document.querySelectorAll('#versionOptions .version-option.selected')).map(li=>li.getAttribute('data-value'));
+                document.getElementById('version').value = selected.join(', ');
+                // submit form
+                document.getElementById('versionForm').submit();
+            };
+
+            // Loader selection (multi)
+            window.toggleLoader = function(el){
+                if(!el) return;
+                const v = el.getAttribute('data-value') || el.textContent.trim();
+                const form = document.getElementById('versionForm');
+                const existing = Array.from(form.querySelectorAll('input[name="loader"]')).find(i=>i.value===v);
+                if(existing){
+                    existing.remove();
+                    el.classList.remove('selected');
+                } else {
+                    const h = document.createElement('input'); h.type='hidden'; h.name='loader'; h.value=v; form.appendChild(h);
+                    el.classList.add('selected');
+                }
+                // submit form
+                document.getElementById('versionForm').submit();
+            };
+
+            // Category selection (multi)
+            window.toggleCategory = function(el){
+                if(!el) return;
+                const v = el.getAttribute('data-value') || el.textContent.trim();
+                const form = document.getElementById('versionForm');
+                const existing = Array.from(form.querySelectorAll('input[name="category"]')).find(i=>i.value===v);
+                if(existing){
+                    existing.remove();
+                    el.classList.remove('selected');
+                } else {
+                    const h = document.createElement('input'); h.type='hidden'; h.name='category'; h.value=v; form.appendChild(h);
+                    el.classList.add('selected');
+                }
+                document.getElementById('versionForm').submit();
+            };
+
+            // Environment selection (multi)
+            window.toggleEnvironment = function(el){
+                if(!el) return;
+                const v = el.getAttribute('data-value') || el.textContent.trim();
+                const form = document.getElementById('versionForm');
+                const existing = Array.from(form.querySelectorAll('input[name="environment"]')).find(i=>i.value===v);
+                if(existing){
+                    existing.remove();
+                    el.classList.remove('selected');
+                } else {
+                    const h = document.createElement('input'); h.type='hidden'; h.name='environment'; h.value=v; form.appendChild(h);
+                    el.classList.add('selected');
+                }
+                document.getElementById('versionForm').submit();
+            };
+
+            window.toggleMoreLoaders = function(btn){
+                const hidden = document.querySelectorAll('.more-item');
+                const showing = hidden.length && hidden[0].classList.contains('hidden') === false;
+                hidden.forEach(el => el.classList.toggle('hidden'));
+                btn.textContent = showing ? 'Show more' : 'Show less';
+            };
+
+            window.togglePanel = function(id){
+                const wrapper = document.getElementById(id);
+                if(!wrapper) return;
+                const isOpen = wrapper.style.display !== 'none';
+                wrapper.style.display = isOpen ? 'none' : '';
+                const chevronMap = {
+                    versionPanelWrapper: 'chev-version',
+                    loaderPanelWrapper: 'chev-loader',
+                    categoryPanelWrapper: 'chev-category',
+                    environmentPanelWrapper: 'chev-environment'
+                };
+                const chev = document.getElementById(chevronMap[id]);
+                if(chev) chev.classList.toggle('rotated', isOpen);
+            };
+
+            document.addEventListener('click', function(e){
+                if(!dropdown.contains(e.target)){
+                    panel.classList.remove('open');
+                    panel.setAttribute('aria-hidden', 'true');
+                }
+            });
+
+            document.addEventListener('keydown', function(e){
+                if(e.key === 'Escape'){
+                    panel.classList.remove('open');
+                    panel.setAttribute('aria-hidden', 'true');
+                }
+            });
+        })();
+    </script>
+</body>
+</html>
